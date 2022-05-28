@@ -1,5 +1,6 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
+import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
 import Header from '../Header/Header.js';
 import Main from '../Main/Main.js';
 import Footer from '../Footer/Footer.js';
@@ -28,6 +29,14 @@ function App() {
   const [cards, setCards] = useState([]);
   const [isRenderLoading, setRenderLoading] = useState(false);
 
+  // const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // const [isInfoTooltipOpen, setIsInfoTooltipOpen] = useState(false);
+  // const [message, setMassage] = useState({
+  //   text: "",
+  //   imgPath: "",
+  // });
+  // const [email, setEmail] = useState("");
+
 
   useEffect(() => {
     Promise.all([
@@ -42,6 +51,32 @@ function App() {
         console.log(err);
       });
   }, []);
+
+  // useEffect(() => {
+  //   if (isLoggedIn) {
+  //     api
+  //       .getUserInfoFromApi()
+  //       .then((user) => {
+  //         setCurrentUser(user);
+  //       })
+  //       .catch((err) => `Ошибка получения данных пользователя : ${err}`);
+  //   }
+  // }, [isLoggedIn]);
+
+  // useEffect(() => {
+  //   if (isLoggedIn) {
+  //     api
+  //       .getCardsFromApi()
+  //       .then((cards) => {
+  //         setCards(cards);
+  //       })
+  //       .catch((err) => `Ошибка получения карточек: ${err}`);
+  //   }
+  // }, [isLoggedIn]);
+
+  // useEffect(() => {
+  //   checkToken();
+  // }, []);
 
   
   function handleCardLike(card) {
@@ -143,19 +178,104 @@ function App() {
     setConfirmPopupOpen(false);
 }
 
+// const handleRegister = (password, email) => {
+//   auth
+//     .register(password, email)
+//     .then(() => {
+//       history.push("/signin");
+//       setMassage({
+//         text: "Вы успешно зарегистрировались!",
+//         imgPath: successImg,
+//       });
+//     })
+//     .catch((err) => {
+//       setMassage({
+//         text: "Что-то пошло не так! Попробуйте ещё раз.",
+//         imgPath: unSuccessImg,
+//       });
+//       return err == 400
+//         ? console.log("Ошибка 400 - некорректно заполнено одно из полей")
+//         : console.log(`Ошибка ${err}`);
+//     })
+//     .finally(() => setIsInfoTooltipOpen(true));
+// };
+
+// const handleAutorize = (password, email) => {
+//   auth
+//     .authorize(password, email)
+//     .then((data) => {
+//       auth.getToken(data.token).then((res) => {
+//         setIsLoggedIn(true);
+//         history.push("/");
+//       });
+//     })
+//     .catch((err) => {
+//       setMassage({
+//         text: "Что-то пошло не так! Попробуйте ещё раз.",
+//         imgPath: unSuccessImg,
+//       });
+//       setIsInfoTooltipOpen(true);
+//       switch (err) {
+//         case 400:
+//           console.log("Ошибка 400 - не передано одно из полей");
+//           break;
+//         case 401:
+//           console.log("Ошибка 401 - пользователь с email не найден ");
+//           break;
+//         default:
+//           console.log(`Ошибка ${err}`);
+//       }
+//     });
+// };
+
+// const checkToken = () => {
+//   const token = localStorage.getItem("token");
+//   if (token) {
+//     auth
+//       .getToken(token)
+//       .then((res) => {
+//         setIsLoggedIn(true);
+//         history.push("/");
+//         setEmail(res.data.email);
+//       })
+//       .catch((err) => console.log(err));
+//   }
+// };
+
+// const signOut = () => {
+//   localStorage.removeItem("token");
+//   setIsLoggedIn(false);
+//   history.push("/signup");
+// };
+
+
   return (
     <div className='page'>
       <CurrentUserContext.Provider value={currentUser}>
         <Header />
-        <Main 
-            onEditAvatar={handleEditAvatarClick}
-            onEditProfile={handleEditProfileClick}
-            onAddCard={handleAddCardClick}
-            onCardClick={handleCardImageClick}
-            onDeleteClick={handleDeleteCardClick}
-            cards={cards}
-            handleCardLike={handleCardLike}
-        />
+        <Switch>
+          <Rout path="/sign-in">
+            <Login />
+          </Rout>
+          <Rout path="/sign-up">
+            <Register />
+          </Rout>
+          <ProtectedRout  exact path="/" loggedIn={loggedIn}>
+            <Main 
+              onEditAvatar={handleEditAvatarClick}
+              onEditProfile={handleEditProfileClick}
+              onAddCard={handleAddCardClick}
+              onCardClick={handleCardImageClick}
+              onDeleteClick={handleDeleteCardClick}
+              cards={cards}
+              handleCardLike={handleCardLike}
+            />
+          </ProtectedRout>
+          <Route>
+            {loggedIn ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
+          </Route>
+        </Switch>
+        
         <Footer />
         <EditAvatartPopup 
               isOpen={isEditAvatarPopupOpen} 
