@@ -1,6 +1,5 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
 import Header from '../Header/Header.js';
 import Main from '../Main/Main.js';
 import Footer from '../Footer/Footer.js';
@@ -9,8 +8,15 @@ import EditProfilePopup from '../EditProfilePopup/EditProfilePopup.js';
 import AddCardPopup from '../AddCardPopup/AddCardPopup.js';
 import ImagePopup from '../ImagePopup/imagePopup.js';
 import ConfirmPopup from '../ConfirmPopup/ConfirmPopup.js';
-import CurrentUserContext from './../../contexts/CurrentUserContext.js';
 import { api } from '../../utils/Api.js';
+import Login from '../Login/Login.js';
+import Register from '../Register/Register.js';
+import InfoTooltip from '../InfoTooltip/InfoTooltip.js';
+import * as auth from "../../utils/auth.js";
+import CurrentUserContext from './../../contexts/CurrentUserContext.js';
+import ProtectedRoute from '../ProtectedRoute/ProtectedRoute.js';
+import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
+
 
 function App() {
 
@@ -28,18 +34,15 @@ function App() {
   });
   const [cards, setCards] = useState([]);
   const [isRenderLoading, setRenderLoading] = useState(false);
-
-  // const [isLoggedIn, setIsLoggedIn] = useState(false);
-  // const [isInfoTooltipOpen, setIsInfoTooltipOpen] = useState(false);
-  // const [message, setMassage] = useState({
-  //   text: "",
-  //   imgPath: "",
-  // });
-  // const [email, setEmail] = useState("");
-
+  const [isInfoTooltipPopupOpen, setInfoTooltipPopupOpen] = useState(false);
+  const [email, setEmail] = useState('');
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const history = useHistory();
 
   useEffect(() => {
-    Promise.all([
+    if (loggedIn) {
+      Promise.all([
         api.getUserInfo(),
         api.getInitialCards()
       ])
@@ -50,35 +53,10 @@ function App() {
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+    }
+  }, [loggedIn]);
 
-  // useEffect(() => {
-  //   if (isLoggedIn) {
-  //     api
-  //       .getUserInfoFromApi()
-  //       .then((user) => {
-  //         setCurrentUser(user);
-  //       })
-  //       .catch((err) => `Ошибка получения данных пользователя : ${err}`);
-  //   }
-  // }, [isLoggedIn]);
-
-  // useEffect(() => {
-  //   if (isLoggedIn) {
-  //     api
-  //       .getCardsFromApi()
-  //       .then((cards) => {
-  //         setCards(cards);
-  //       })
-  //       .catch((err) => `Ошибка получения карточек: ${err}`);
-  //   }
-  // }, [isLoggedIn]);
-
-  // useEffect(() => {
-  //   checkToken();
-  // }, []);
-
-  
+    
   function handleCardLike(card) {
     const isLiked = card.likes.some(like => like._id === currentUser._id);
 
@@ -178,90 +156,80 @@ function App() {
     setConfirmPopupOpen(false);
 }
 
-// const handleRegister = (password, email) => {
-//   auth
-//     .register(password, email)
-//     .then(() => {
-//       history.push("/signin");
-//       setMassage({
-//         text: "Вы успешно зарегистрировались!",
-//         imgPath: successImg,
-//       });
-//     })
-//     .catch((err) => {
-//       setMassage({
-//         text: "Что-то пошло не так! Попробуйте ещё раз.",
-//         imgPath: unSuccessImg,
-//       });
-//       return err == 400
-//         ? console.log("Ошибка 400 - некорректно заполнено одно из полей")
-//         : console.log(`Ошибка ${err}`);
-//     })
-//     .finally(() => setIsInfoTooltipOpen(true));
-// };
+const handleLogin = ({password, email}) => {
+  auth
+    .authorize(email, password)
+    .then((res) => {
+      localStorage.setItem('jwt', res.token);
+      setLoggedIn(true);
+      setEmail(email);
+      history.push('/');
+    })
+    .catch((err) => {
+      setInfoTooltipPopupOpen(true);
+      setIsSuccess(false);
+      console.log(err);
+    })
+};
 
-// const handleAutorize = (password, email) => {
-//   auth
-//     .authorize(password, email)
-//     .then((data) => {
-//       auth.getToken(data.token).then((res) => {
-//         setIsLoggedIn(true);
-//         history.push("/");
-//       });
-//     })
-//     .catch((err) => {
-//       setMassage({
-//         text: "Что-то пошло не так! Попробуйте ещё раз.",
-//         imgPath: unSuccessImg,
-//       });
-//       setIsInfoTooltipOpen(true);
-//       switch (err) {
-//         case 400:
-//           console.log("Ошибка 400 - не передано одно из полей");
-//           break;
-//         case 401:
-//           console.log("Ошибка 401 - пользователь с email не найден ");
-//           break;
-//         default:
-//           console.log(`Ошибка ${err}`);
-//       }
-//     });
-// };
+const handleRegister = ({password, email}) => {
+  auth
+    .register(email, password)
+    .then((res) => {
+      setInfoTooltipPopupOpen(true);
+      setIsSuccess(true);
+      history.push('/sign-in');
+    })
+    .catch((err) => {
+      setInfoTooltipPopupOpen(true);
+      setIsSuccess(false);
+      console.log(err)
+    });
+};
 
-// const checkToken = () => {
-//   const token = localStorage.getItem("token");
-//   if (token) {
-//     auth
-//       .getToken(token)
-//       .then((res) => {
-//         setIsLoggedIn(true);
-//         history.push("/");
-//         setEmail(res.data.email);
-//       })
-//       .catch((err) => console.log(err));
-//   }
-// };
+const handleSignOut = () => {
+  localStorage.removeItem('jwt');
+  setLoggedIn(false);
+  history.push('/sign-in');
+};
 
-// const signOut = () => {
-//   localStorage.removeItem("token");
-//   setIsLoggedIn(false);
-//   history.push("/signup");
-// };
-
+useEffect(() => {
+  const tokenCheck = () => {
+    const jwt = localStorage.getItem('jwt');
+    if (jwt) {
+      auth
+        .getContent(jwt)
+        .then((res) => {
+          if (res) {
+            setLoggedIn(true);
+            setEmail(res.data.email);
+            history.push('/');
+          }
+        })
+        .catch((err) => console.error(err));
+    }
+  };
+  tokenCheck();
+}, [history, loggedIn]);
 
   return (
     <div className='page'>
       <CurrentUserContext.Provider value={currentUser}>
-        <Header />
+
+        <Header onSignOut={handleSignOut} email={email} />
+
         <Switch>
-          <Rout path="/sign-in">
-            <Login />
-          </Rout>
-          <Rout path="/sign-up">
-            <Register />
-          </Rout>
-          <ProtectedRout  exact path="/" loggedIn={loggedIn}>
-            <Main 
+          <Route path="/sign-in">
+            <Login onLogin={handleLogin} />
+          </Route>
+          <Route path="/sign-up">
+            <Register onRegister={handleRegister} />
+          </Route>
+          <ProtectedRoute 
+              component={Main} 
+              exact 
+              path="/" 
+              loggedIn={loggedIn}>
               onEditAvatar={handleEditAvatarClick}
               onEditProfile={handleEditProfileClick}
               onAddCard={handleAddCardClick}
@@ -269,14 +237,14 @@ function App() {
               onDeleteClick={handleDeleteCardClick}
               cards={cards}
               handleCardLike={handleCardLike}
-            />
-          </ProtectedRout>
+          </ProtectedRoute>
           <Route>
             {loggedIn ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
           </Route>
         </Switch>
         
         <Footer />
+
         <EditAvatartPopup 
               isOpen={isEditAvatarPopupOpen} 
               onClose={closePopups} 
@@ -306,6 +274,11 @@ function App() {
               onClose={closePopups}
               onDeleteCard={handleCardDeleteSubmit}
               isRenderLoading={isRenderLoading}
+        />
+        <InfoTooltip 
+              isOpen={isInfoTooltipPopupOpen} 
+              onClose={closePopups} 
+              isSuccess={isSuccess} 
         />
       </CurrentUserContext.Provider>
     </div>    

@@ -2,22 +2,18 @@ import React from 'react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-function Register({onAuth}) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');  
+function Register({ onRegister }) {
+    const [formValues, setFormValues] = useState({password: '', email: ''});
 
-  const handleChangeEmail = (evt) => {    
-    setEmail(evt.target.value);
-  }
-
-  const handleChangePassword = (evt) => {
-    setPassword(evt.target.value);
-  }
+    function handleSubmit(e) {
+      e.preventDefault();
+      onRegister(formValues);
+    }
   
-  const  handleSubmit = (evt) => {
-    evt.preventDefault();
-    onAuth(password, email);
-  }
+    function handleChange(e) {
+      const {name, value} = e.target;
+      setFormValues((prevState) => ({...prevState, [name]: value}));
+    }
 
   return (
     <form className="login" onSubmit={handleSubmit}>
@@ -25,21 +21,23 @@ function Register({onAuth}) {
       <fieldset className="login__inputs-container">
         <input 
             className="login__input"
+            onChange={handleChange}
+            value={formValues.email || ''}
             type="email" 
             placeholder="Email"
-            value={email || ''} 
-            onChange={handleChangeEmail}
+            required
         />
         <input
             className="login__input"
+            onChange={handleChange}
+            value={formValues.password || ''}
             type="password"
             placeholder="Пароль"
-            value={password || ''} 
-            onChange={handleChangePassword}
+            required
         />
       </fieldset>
       <button className="login__button" type="submit">Зарегистрироваться</button>
-      <Link className="login__redirect-button" to='/signin'>Уже зарегистрированы? Войти</Link>
+      <Link className="login__redirect-button" to='/sign-in'>Уже зарегистрированы? Войти</Link>
     </form>
   );
 }

@@ -1,18 +1,22 @@
 import React from 'react';
-import { useEffect } from 'react';
+import success from '../../images/успешная-регистрация.svg';
+import unsuccess from '../../images/неудачная-регистрация.svg';
 
-function InfoTooltip(props) {
+function InfoTooltip({ isOpen, onClose, isSuccess }) {
+    const successImg = isSuccess ? success : unsuccess;
+    const succesAltText = isSuccess ? 'Успех' : 'Ошибка';
+    const succesText = isSuccess ? 'Вы успешно зарегистрировались!' : 'Что-то пошло не так! Попробуйте ещё раз.';
   
-  return (
-    <div className={`popup popup_type_log-confirm ${props.isOpen && 'popup_opened'}`} onClick={props.onClose}>
+    return (
+    <div className={`popup popup_type_log-confirm ${isOpen && 'popup_opened'}`} onClick={onClose}>
         <div className="popup__container-confirm">
-            <button className="popup__close" type="button" onClick={props.onClose}></button>  
+            <button className="popup__close" type="button" onClick={onClose}></button>  
             <img 
                 className="popup__confirm-image"
-                src={props.imgPath}
-                alt={props.title}
+                src={successImg}
+                alt={succesAltText}
             />
-            <h3 className="popup__item-caption">{props.title}</h3>
+            <h3 className="popup__item-caption">{succesText}</h3>
         </div>
     </div>
   );

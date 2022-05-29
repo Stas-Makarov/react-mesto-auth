@@ -1,22 +1,18 @@
 import React from 'react';
 import { useState } from 'react';
 
-function Login({ onAuth }) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
-  const handleChangeEmail = (evt) => {
-    setEmail(evt.target.value);
-  };
-
-  const handleChangePassword = (evt) => {
-    setPassword(evt.target.value);
-  };
+function Login({ onLogin }) {
+    const [formValues, setFormValues] = useState({password: '', email: ''});
   
-  const handleSubmit = (evt) => {
-    evt.preventDefault();
-    onAuth(password, email);
-  };
+    function handleSubmit(e) {
+      e.preventDefault();
+      onLogin(formValues);
+    }
+  
+    function handleChange(e) {
+      const {name, value} = e.target;
+      setFormValues((prevState) => ({...prevState, [name]: value}));
+    }
 
   return (
     <form className="login" onSubmit={handleSubmit}>
@@ -24,17 +20,19 @@ function Login({ onAuth }) {
       <div className="login__inputs-container">
         <input
             className="login__input"
+            onChange={handleChange}
+            value={formValues.email || ''}          
             type="email"
             placeholder="Email"
-            value={email || ""}
-            onChange={handleChangeEmail}
+            required
         />
         <input
             className="login__input"
+            onChange={handleChange}
             type="password"
+            value={formValues.password || ''}
             placeholder="Пароль"
-            value={password || ""}
-            onChange={handleChangePassword}
+            required
         />
       </div>
       <button className="login__button" type="submit">
