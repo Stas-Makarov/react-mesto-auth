@@ -16,7 +16,7 @@ function InfoTooltip({ isOpen, onClose, isSuccess }) {
                 src={successImg}
                 alt={succesAltText}
             />
-            <h3 className="popup__item-caption">{succesText}</h3>
+            <h3 className="popup__item-text">{succesText}</h3>
         </div>
     </div>
   );

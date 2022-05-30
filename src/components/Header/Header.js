@@ -7,13 +7,13 @@ function Header({ onSignOut, email }) {
         <header className="header">
             <img className="header__logo" src={Logo} alt="логотип"/>
             <Switch>
-                <Route path="/signup">
-                    <Link className="header__login" to="/signin" >
+                <Route exact path="/sign-up">
+                    <Link className="header__login" to="/sign-in" >
                         Войти
                     </Link>
                 </Route>
-                <Route path="/signin">
-                    <Link className="header__login" to="/signup" >
+                <Route exact path="/sign-in">
+                    <Link className="header__login" to="/sign-up" >
                         Регистрация
                     </Link>
                 </Route>

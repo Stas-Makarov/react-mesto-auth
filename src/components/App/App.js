@@ -154,6 +154,7 @@ function App() {
     setIsAddCardPopupOpen(false);
     setImagePopupOpen(false);
     setConfirmPopupOpen(false);
+    setInfoTooltipPopupOpen(false);
 }
 
 const handleLogin = ({password, email}) => {
