@@ -219,17 +219,11 @@ useEffect(() => {
         <Header onSignOut={handleSignOut} email={email} />
 
         <Switch>
-          <Route path="/sign-in">
-            <Login onLogin={handleLogin} />
-          </Route>
-          <Route path="/sign-up">
-            <Register onRegister={handleRegister} />
-          </Route>
-          <ProtectedRoute 
+          <ProtectedRoute
               component={Main} 
               exact 
               path="/" 
-              loggedIn={loggedIn}>
+              loggedIn={loggedIn}
               onEditAvatar={handleEditAvatarClick}
               onEditProfile={handleEditProfileClick}
               onAddCard={handleAddCardClick}
@@ -237,13 +231,22 @@ useEffect(() => {
               onDeleteClick={handleDeleteCardClick}
               cards={cards}
               handleCardLike={handleCardLike}
-          </ProtectedRoute>
+          />
+          
+          <Route path="/sign-in">
+            <Login onLogin={handleLogin} />
+          </Route>
+          
+          <Route path="/sign-up">
+            <Register onRegister={handleRegister} />
+          </Route>
+
           <Route>
             {loggedIn ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
           </Route>
         </Switch>
         
-        <Footer />
+        {loggedIn && <Footer />}
 
         <EditAvatartPopup 
               isOpen={isEditAvatarPopupOpen} 

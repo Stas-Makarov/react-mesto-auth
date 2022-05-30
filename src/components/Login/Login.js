@@ -15,13 +15,15 @@ function Login({ onLogin }) {
     }
 
   return (
-    <form className="login" onSubmit={handleSubmit}>
+    <div className="login">
       <h2 className="login__title">Вход</h2>
-      <div className="login__inputs-container">
+      <form className="login__inputs-container" onSubmit={handleSubmit} action="/" method="post" name="login">
         <input
             className="login__input"
             onChange={handleChange}
-            value={formValues.email || ''}          
+            value={formValues.email || ''}  
+            id="user-email"        
+            name="email"
             type="email"
             placeholder="Email"
             required
@@ -31,14 +33,14 @@ function Login({ onLogin }) {
             onChange={handleChange}
             type="password"
             value={formValues.password || ''}
+            id="user-password"
+            name="password"
             placeholder="Пароль"
             required
         />
-      </div>
-      <button className="login__button" type="submit">
-        Войти
-      </button>
-    </form>
+        <button className="login__button" type="submit">Войти</button>
+      </form>
+    </div>
   );
 }
 

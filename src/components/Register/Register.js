@@ -16,13 +16,15 @@ function Register({ onRegister }) {
     }
 
   return (
-    <form className="login" onSubmit={handleSubmit}>
+    <div className="login">
       <h2 className="login__title">Регистрация</h2>
-      <fieldset className="login__inputs-container">
+      <form className="login__inputs-container" onSubmit={handleSubmit} action="/" method="post" name="registration">
         <input 
             className="login__input"
             onChange={handleChange}
             value={formValues.email || ''}
+            id="user-email"
+            name="email"
             type="email" 
             placeholder="Email"
             required
@@ -31,14 +33,16 @@ function Register({ onRegister }) {
             className="login__input"
             onChange={handleChange}
             value={formValues.password || ''}
+            id="user-password"
+            name="password"
             type="password"
             placeholder="Пароль"
             required
         />
-      </fieldset>
-      <button className="login__button" type="submit">Зарегистрироваться</button>
+        <button className="login__button" type="submit">Зарегистрироваться</button>
+      </form>
       <Link className="login__redirect-button" to='/sign-in'>Уже зарегистрированы? Войти</Link>
-    </form>
+    </div>
   );
 }
 
