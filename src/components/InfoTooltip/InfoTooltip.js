@@ -1,6 +1,6 @@
 import React from 'react';
-import success from '../../images/успешная-регистрация.svg';
-import unsuccess from '../../images/неудачная-регистрация.svg';
+import success from '../../images/success-reg.svg';
+import unsuccess from '../../images/unsuccess-reg.svg';
 
 function InfoTooltip({ isOpen, onClose, isSuccess }) {
     const successImg = isSuccess ? success : unsuccess;
