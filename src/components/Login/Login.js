@@ -21,8 +21,7 @@ function Login({ onLogin }) {
         <input
             className="login__input"
             onChange={handleChange}
-            value={formValues.email || ''}  
-            id="user-email"        
+            value={formValues.email || ''}        
             name="email"
             type="email"
             placeholder="Email"
@@ -33,7 +32,6 @@ function Login({ onLogin }) {
             onChange={handleChange}
             type="password"
             value={formValues.password || ''}
-            id="user-password"
             name="password"
             placeholder="Пароль"
             required

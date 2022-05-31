@@ -39,9 +39,9 @@ function EditProfilePopup(props){
             onSubmit={handleSubmit}
             buttonText={props.isRenderLoading ? 'Сохранение...' : 'Сохранить'}>
 
-            <input className="popup__form-item popup__form-item_type_person-name" type="text" name="name" onChange={handleChangeName} value={name} minLength="2" maxLength="40" placeholder="Имя" required />
+            <input className="popup__form-item popup__form-item_type_person-name" type="text" name="name" onChange={handleChangeName} value={name || ''} minLength="2" maxLength="40" placeholder="Имя" required />
             <span className="popup__form-item-error popup__form-item-error_type_name"></span>     
-            <input className="popup__form-item popup__form-item_type_job" type="text" name="about" onChange={handleChangeDescription} value={description} minLength="2" maxLength="200" placeholder="О себе" required />
+            <input className="popup__form-item popup__form-item_type_job" type="text" name="about" onChange={handleChangeDescription} value={description || ''} minLength="2" maxLength="200" placeholder="О себе" required />
             <span className="popup__form-item-error popup__form-item-error_type_about"></span>            
         </PopupWithForm>
 

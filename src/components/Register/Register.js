@@ -23,7 +23,6 @@ function Register({ onRegister }) {
             className="login__input"
             onChange={handleChange}
             value={formValues.email || ''}
-            id="user-email"
             name="email"
             type="email" 
             placeholder="Email"
@@ -33,7 +32,6 @@ function Register({ onRegister }) {
             className="login__input"
             onChange={handleChange}
             value={formValues.password || ''}
-            id="user-password"
             name="password"
             type="password"
             placeholder="Пароль"
